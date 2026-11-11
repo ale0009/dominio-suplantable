@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>¿Tu dominio se puede suplantar?</title>
+  <meta name="description" content="Escribe un dominio y mira qué tan fácil es enviar correos falsos a su nombre: revisa SPF, DMARC, DKIM, DNSSEC, MTA-STS y TLS-RPT desde tu navegador y te da una nota de la A a la F con los registros para arreglarlo.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bangers&family=IBM+Plex+Mono:wght@400;600&display=swap">
+  <link rel="stylesheet" href="css/estilo.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23F9F9F7'/%3E%3Crect x='4' y='8' width='24' height='16' fill='none' stroke='%230A090A' stroke-width='3'/%3E%3Cpath d='M4 8l12 9 12-9' fill='none' stroke='%230A090A' stroke-width='3'/%3E%3Cpath d='M20 4l8 24' stroke='%23CB433E' stroke-width='3.5'/%3E%3C/svg%3E">
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+  <a class="saltar" href="#veredicto">Saltar al resultado</a>
+  <header class="cabecera">
+    <span class="kanji" aria-hidden="true">偽装</span>
+    <div class="titulo">
+      <p class="antetitulo">SPF · DMARC · DKIM · DNS sobre HTTPS</p>
+      <h1>¿Tu dominio se puede suplantar?</h1>
+    </div>
+    <nav class="nav">
+      <a class="boton-linea" href="proceso/">Cómo se hizo</a>
+      <button type="button" class="boton-linea" id="tema" aria-label="Cambiar tema">Tema: auto</button>
+    </nav>
+  </header>
+
+  <main class="tablero">
+    <section class="consulta vineta" aria-labelledby="consulta-t">
+      <h2 id="consulta-t" class="visual-oculto">Revisar un dominio</h2>
+      <form id="form" class="form" novalidate>
+        <label for="dominio" class="etiqueta">Dominio</label>
+        <div class="fila-form">
+          <input id="dominio" name="dominio" type="text" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false"
+                 placeholder="ecci.edu.co" aria-describedby="ayuda-dominio">
+          <button type="submit" class="boton-tinta" id="revisar">Revisar</button>
+        </div>
+        <p id="ayuda-dominio" class="ayuda">Sirve un dominio, una URL o un correo: se queda con lo que va después de la @.</p>
+      </form>
+      <div class="ejemplos" role="group" aria-label="Ejemplos">
+        <span class="etiqueta">Ejemplos</span>
+        <button type="button" class="mini" data-ejemplo="paypal.com">paypal.com</button>
+        <button type="button" class="mini" data-ejemplo="github.com">github.com</button>
+        <button type="button" class="mini" data-ejemplo="python.org">python.org</button>
+        <button type="button" class="mini" data-ejemplo="example.com">example.com</button>
+      </div>
+      <p class="etica">Solo lee registros DNS públicos, como cualquier servidor de correo. No envía correos ni toca los servidores del dominio. Úsalo para revisar los tuyos.</p>
+    </section>
+
+    <section class="respuesta vineta" id="respuesta" data-tono="carga" aria-live="polite" aria-busy="true" aria-labelledby="veredicto">
+      <span class="onoma" id="onoma" aria-hidden="true">PING…</span>
+      <div class="cabeza-res">
+        <div class="sello-nota" id="nota" aria-hidden="true">–</div>
+        <div class="textos-res">
+          <p class="pregunta" id="pregunta">Revisando…</p>
+          <p class="veredicto" id="veredicto"><span class="cargando-txt">Consultando el DNS…</span></p>
+          <p class="sub-veredicto" id="sub-veredicto"></p>
+        </div>
+      </div>
+      <div class="barra-puntos" id="barra" role="meter" aria-label="Puntos de 100" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i><span id="puntos">– / 100</span></div>
+      <p class="estado" id="estado"><span class="chip chip-carga">Cargando</span></p>
+    </section>
+
+    <section class="controles-res" aria-labelledby="tarjetas-t">
+      <h2 id="tarjetas-t" class="titulo-tarjetas">Control por control</h2>
+      <div class="tarjetas" id="tarjetas"></div>
+    </section>
+  </main>
+
+  <footer class="pie">
+    <p>Consultas DNS: <a href="https://developers.google.com/speed/public-dns/docs/doh/json">Google Public DNS</a> y, si falla, <a href="https://developers.cloudflare.com/1.1.1.1/encryption/dns-over-https/make-api-requests/dns-json/">Cloudflare</a>, directo desde tu navegador. Basado en las RFC 7208 (SPF), 7489 (DMARC) y 6376 (DKIM). No reemplaza una auditoría.</p>
+    <p class="creditos"><a href="https://github.com/ale0009" target="_blank" rel="noopener">Mario Puerta «ale0009»</a> × <a href="https://www.linkedin.com/in/davidalexanderrinconcorredorkuronoma/" target="_blank" rel="noopener">David Rincón «Kuronoma»</a> <a href="#">Portafolio</a></p>
+  </footer>
+</body>
+</html>

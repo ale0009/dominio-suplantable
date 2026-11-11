@@ -1,0 +1,11 @@
+{
+  "name": "dominio-suplantable",
+  "version": "1.0.0",
+  "description": "¿Tu dominio se puede suplantar? Revisa SPF, DMARC, DKIM y extras con DNS sobre HTTPS desde el navegador y da una nota de la A a la F. Página estática sin build.",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "author": "Mario Alejandro Puerta Alarcón",
+  "scripts": { "test": "node --test" },
+  "engines": { "node": ">=20" }
+}

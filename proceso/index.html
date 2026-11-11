@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cómo se hizo · ¿Tu dominio se puede suplantar?</title>
+  <meta name="description" content="Cómo funciona la suplantación de correo, qué protege cada registro DNS (SPF, DKIM, DMARC), cómo se puntúa, una muestra de 30 dominios colombianos y el marco legal de la Ley 1273 (arts. 269G y 269F).">
+  <meta name="color-scheme" content="light dark">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bangers&family=IBM+Plex+Mono:wght@400;600&display=swap">
+  <link rel="stylesheet" href="../css/estilo.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23F9F9F7'/%3E%3Crect x='4' y='8' width='24' height='16' fill='none' stroke='%230A090A' stroke-width='3'/%3E%3Cpath d='M4 8l12 9 12-9' fill='none' stroke='%230A090A' stroke-width='3'/%3E%3Cpath d='M20 4l8 24' stroke='%23CB433E' stroke-width='3.5'/%3E%3C/svg%3E">
+  <script type="module" src="../js/proceso.js"></script>
+</head>
+<body class="pagina-proceso">
+  <a class="saltar" href="#contenido">Saltar al contenido</a>
+  <header class="cabecera">
+    <span class="kanji" aria-hidden="true">手口</span>
+    <div class="titulo">
+      <p class="antetitulo">Proceso · ¿Tu dominio se puede suplantar?</p>
+      <h1>Cómo se hizo</h1>
+    </div>
+    <nav class="nav">
+      <a class="boton-linea" href="../">Volver a la herramienta</a>
+      <button type="button" class="boton-linea" id="tema" aria-label="Cambiar tema">Tema: auto</button>
+    </nav>
+  </header>
+
+  <main class="articulo" id="contenido">
+    <nav class="indice vineta" aria-label="En esta página">
+      <ol>
+        <li><a href="#problema">El problema</a></li>
+        <li><a href="#suplantacion">Cómo se suplanta un correo</a></li>
+        <li><a href="#registros">Qué protege cada registro</a></li>
+        <li><a href="#nota">Cómo se puntúa</a></li>
+        <li><a href="#muestra">Muestra: 30 dominios colombianos</a></li>
+        <li><a href="#ley">Marco legal</a></li>
+        <li><a href="#diseno">Decisiones de diseño</a></li>
+        <li><a href="#limites">Limitaciones</a></li>
+        <li><a href="#fuentes">Fuentes</a></li>
+      </ol>
+    </nav>
+
+    <section id="problema" class="bloque">
+      <h2>1 · El problema</h2>
+      <p>En la exposición «Prevención frente a los delitos informáticos. Responsabilidad legal en TIC», Mario y David (con su equipo) pusieron el <strong>phishing</strong> y la <strong>suplantación de sitios web</strong> entre los ejemplos más comunes de delito informático en Colombia. Uno de los casos que presentaron fue una campaña de suplantación de entidades bancarias por SMS y correo para robar credenciales, perseguida con el art. 269G de la Ley 1273. Entre las recomendaciones del trabajo estaban las simulaciones de phishing, las auditorías de configuración y «verificar URLs antes de ingresar credenciales».</p>
+      <p>Esa recomendación pone el trabajo en quien recibe el correo. Esta herramienta mira el otro lado: <strong>¿el dueño del dominio hizo lo que le toca para que nadie pueda mandar correos «desde» su dirección?</strong> Eso se puede revisar desde fuera, sin permisos, porque está publicado en el DNS.</p>
+      <p class="nota-fuente">Se usa el trabajo de clase solo para el marco (delito, artículos y prevención). No se publican nombres de compañeros, docentes ni códigos.</p>
+    </section>
+
+    <section id="suplantacion" class="bloque">
+      <h2>2 · Cómo se suplanta un correo</h2>
+      <p>El correo (SMTP) se diseñó en 1982 sin comprobar quién envía. Un correo tiene <strong>dos remitentes</strong>: el del «sobre» (<code>MAIL FROM</code>, el que usan los servidores) y el de la cabecera <code>From:</code>, el que ve la persona. Cualquiera puede escribir lo que quiera en los dos. Los tres registros que revisa la herramienta son los parches que se le pusieron después:</p>
+      <figure class="vineta figura">
+        <div class="desliza"><svg class="flujo" viewBox="0 0 760 330" role="img" aria-labelledby="flujo-t">
+          <title id="flujo-t">Un impostor envía un correo con From: ayuda@tubanco.example. El servidor que lo recibe revisa SPF, DKIM y DMARC; si DMARC dice reject, el correo se rechaza.</title>
+          <defs>
+            <marker id="m-n" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="punta" d="M0 0L10 5L0 10z"/></marker>
+            <marker id="m-r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="punta roja" d="M0 0L10 5L0 10z"/></marker>
+          </defs>
+          <rect class="caja mala" x="10" y="20" width="215" height="110" rx="3"/>
+          <text class="t-titulo" x="24" y="48">Impostor</text>
+          <text class="mono" x="24" y="74">IP 203.0.113.66</text>
+          <text class="mono" x="24" y="94">From: ayuda@tubanco.example</text>
+          <text x="24" y="116">firma DKIM: ninguna</text>
+          <path class="flecha roja" d="M225 75 H 275" marker-end="url(#m-r)"/>
+          <rect class="caja" x="280" y="10" width="250" height="300" rx="3"/>
+          <text class="t-titulo" x="294" y="38">Servidor que recibe</text>
+          <text x="294" y="70"><tspan font-weight="700">1 · SPF</tspan>: ¿esa IP está en la</text>
+          <text x="294" y="88">lista de tubanco.example? → No</text>
+          <text x="294" y="122"><tspan font-weight="700">2 · DKIM</tspan>: ¿trae una firma que</text>
+          <text x="294" y="140">valide la clave publicada? → No</text>
+          <text x="294" y="174"><tspan font-weight="700">3 · DMARC</tspan>: ¿alguno de los dos</text>
+          <text x="294" y="192">pasó y coincide con From:? → No</text>
+          <text x="294" y="226">¿Qué pide tubanco.example en</text>
+          <text class="mono" x="294" y="246">_dmarc.tubanco.example?</text>
+          <path class="flecha" d="M530 120 H 585" marker-end="url(#m-n)"/>
+          <path class="flecha" d="M530 200 H 585" marker-end="url(#m-n)"/>
+          <path class="flecha" d="M530 280 H 585" marker-end="url(#m-n)"/>
+          <rect class="caja buena" x="590" y="95" width="160" height="50" rx="3"/>
+          <text x="602" y="116" font-weight="700">p=reject</text>
+          <text x="602" y="134">no llega</text>
+          <rect class="caja" x="590" y="175" width="160" height="50" rx="3"/>
+          <text x="602" y="196" font-weight="700">p=quarantine</text>
+          <text x="602" y="214">llega a spam</text>
+          <rect class="caja mala" x="590" y="255" width="160" height="50" rx="3"/>
+          <text x="602" y="276" font-weight="700">p=none o sin DMARC</text>
+          <text x="602" y="294">llega a la bandeja</text>
+        </svg></div>
+        <figcaption>Esquema simplificado (dibujado aquí). La IP y los dominios son de ejemplo: 203.0.113.0/24 está reservado para documentación (RFC 5737).</figcaption>
+      </figure>
+      <p>La clave es el paso 3. SPF solo protege el remitente del sobre y DKIM solo prueba que alguien firmó; ninguno de los dos, solo, obliga a que coincidan con lo que ve la persona. <strong>DMARC une las piezas</strong> y le dice al receptor qué hacer cuando no cuadran. Por eso un dominio con SPF perfecto pero sin DMARC sigue siendo «fácil de suplantar».</p>
+    </section>
+
+    <section id="registros" class="bloque">
+      <h2>3 · Qué protege cada registro</h2>
+      <div class="tabla-scroll">
+        <table class="tabla">
+          <caption>Todos son registros TXT públicos, salvo MX. Las consultas se hacen con DNS sobre HTTPS (Google Public DNS y, si falla, Cloudflare).</caption>
+          <thead><tr><th scope="col">Registro</th><th scope="col">Dónde vive</th><th scope="col">Qué protege</th><th scope="col">Norma</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">MX</th><td><code>dominio</code></td><td>No protege: dice si el dominio recibe correo. Si no recibe, conviene blindarlo (SPF nulo y DMARC reject); un MX nulo <code>0 .</code> lo declara.</td><td>RFC 5321, RFC 7505</td></tr>
+            <tr><th scope="row">SPF</th><td><code>dominio</code></td><td>La lista de servidores que pueden enviar con ese dominio en el sobre. Termina en <code>-all</code> (rechazar), <code>~all</code> (sospechoso), <code>?all</code> (neutro) o <code>+all</code> (todos). Máximo <strong>10 búsquedas DNS</strong> siguiendo los <code>include</code>; si se pasa, el SPF se rompe (permerror). <code>ptr</code> está desaconsejado.</td><td>RFC 7208</td></tr>
+            <tr><th scope="row">DKIM</th><td><code>selector._domainkey.dominio</code></td><td>Una clave pública. El servidor que envía firma cada correo; el que recibe comprueba la firma. Se recomienda RSA de 2048 bits o Ed25519; menos de 1024 se ignora.</td><td>RFC 6376, RFC 8301, RFC 8463</td></tr>
+            <tr><th scope="row">DMARC</th><td><code>_dmarc.dominio</code></td><td>La política (<code>p</code>: none, quarantine o reject), el porcentaje (<code>pct</code>), la de subdominios (<code>sp</code>), la alineación (<code>adkim</code>, <code>aspf</code>: relajada o estricta) y adónde mandar informes (<code>rua</code>).</td><td>RFC 7489</td></tr>
+            <tr><th scope="row">DNSSEC</th><td>toda la zona</td><td>Firma las respuestas DNS. La herramienta lo detecta con la bandera <code>AD</code> del resolutor: sin ella, alguien en la red podría falsificar estos mismos registros.</td><td>RFC 4033–4035</td></tr>
+            <tr><th scope="row">MTA-STS · TLS-RPT</th><td><code>_mta-sts</code> · <code>_smtp._tls</code></td><td>Obligan a cifrar el correo entrante y piden informes si falla. No frenan la suplantación; suman poco.</td><td>RFC 8461, RFC 8460</td></tr>
+            <tr><th scope="row">BIMI</th><td><code>default._bimi</code></td><td>Muestra el logo de la marca. Solo funciona con DMARC en quarantine o reject. Informativo: no suma.</td><td>borrador BIMI Group</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>El camino recomendado (M3AAWG y CISA BOD 18-01)</h3>
+      <ol class="etapas">
+        <li>Publicar SPF con todos los servicios que envían en nombre del dominio y activar DKIM en cada uno.</li>
+        <li>Publicar DMARC con <code>p=none</code> y <code>rua</code> para recibir informes y descubrir quién envía.</li>
+        <li>Corregir lo que salga mal en los informes (2 a 4 semanas) y subir a <code>p=quarantine</code>.</li>
+        <li>Subir a <code>p=reject</code> al 100 %. La directiva BOD 18-01 de CISA exigió exactamente eso a las agencias federales de EE. UU.</li>
+        <li>Para dominios que no envían correo: directamente <code>v=spf1 -all</code> y <code>v=DMARC1; p=reject</code>.</li>
+      </ol>
+    </section>
+
+    <section id="nota" class="bloque">
+      <h2>4 · Cómo se puntúa y por qué</h2>
+      <p>La nota responde a una pregunta: <em>¿un impostor puede poner este dominio en el <code>From:</code> y llegar a la bandeja de entrada?</em> Por eso DMARC pesa casi la mitad: es el único control que protege lo que ve la persona.</p>
+      <figure class="vineta figura">
+        <h3>Reparto de los 100 puntos</h3>
+        <div id="g-pesos" class="g-caja"></div>
+        <ul class="leyenda" id="ley-pesos"></ul>
+      </figure>
+      <div class="dos-col">
+        <div>
+          <h3>Reglas</h3>
+          <ul>
+            <li><strong>DMARC (40 + 5):</strong> none = 10; quarantine = 10 + 20 × pct/100; reject = 10 + 30 × pct/100. <code>sp=none</code> resta 5. Tener <code>rua</code> suma 5.</li>
+            <li><strong>SPF (30):</strong> <code>-all</code> 30; <code>~all</code> 25 (con DMARC es lo que recomiendan M3AAWG y CISA); <code>?all</code> o sin final 8; <code>+all</code> 0; más de 10 búsquedas, más de 2 vacías o dos registros: roto (5 o 0). <code>ptr</code> resta 3.</li>
+            <li><strong>DKIM (15):</strong> clave de 2048 bits o Ed25519 15; 1024 bits 9; solo revocada 4; <strong>no encontrada 4</strong> (no 0, porque puede existir con otro selector).</li>
+            <li><strong>Extras (10):</strong> DNSSEC 5, MTA-STS 3, TLS-RPT 2. Si el dominio no recibe correo, MTA-STS y TLS-RPT no aplican y se dan.</li>
+            <li><strong>Tope:</strong> sin DMARC o con <code>p=none</code>, la nota no pasa de D (59). Un SPF impecable no impide la suplantación del <code>From:</code>.</li>
+          </ul>
+          <p>Notas: A ≥ 90 · B ≥ 75 · C ≥ 60 · D ≥ 40 · F &lt; 40.</p>
+        </div>
+        <div>
+          <h3>El veredicto no es la nota</h3>
+          <p>El titular grande sale solo de lo que pasa con un correo falso:</p>
+          <ul>
+            <li><strong>Fácil de suplantar:</strong> sin DMARC, con errores o con <code>p=none</code>.</li>
+            <li><strong>Suplantable a medias:</strong> <code>p=quarantine</code> (va a spam) o un <code>pct</code> menor de 100.</li>
+            <li><strong>Difícil:</strong> <code>p=reject</code> al 100 %, pero con <code>sp=none</code> (subdominios abiertos) o el SPF roto.</li>
+            <li><strong>Muy difícil:</strong> <code>p=reject</code> al 100 % y lo demás en orden.</li>
+            <li><strong>Blindado:</strong> no recibe correo, SPF nulo <code>-all</code> y <code>p=reject</code>.</li>
+          </ul>
+          <p>Así un dominio con DKIM débil pero <code>p=reject</code> puede sacar B y aun así ser «muy difícil de suplantar»: la nota mide el cuidado general; el veredicto, el riesgo inmediato.</p>
+        </div>
+      </div>
+      <p class="nota-fuente">Los pesos son una decisión de diseño de este proyecto (calculado aquí), no una norma. Las reglas de cada registro sí salen de las RFC y de las guías citadas. La lógica está en <code>js/puntuar.js</code> con 29 pruebas en <code>test/</code>, que usan respuestas DNS reales guardadas el 10 nov 2026.</p>
+    </section>
+
+    <section id="muestra" class="bloque">
+      <h2>5 · Muestra: 30 dominios colombianos</h2>
+      <p>Con la misma lógica de la página (<code>scripts/estudio.mjs</code>) se revisaron el 10 nov 2026 quince dominios de entidades públicas nacionales y de Bogotá (<code>.gov.co</code>) y quince de universidades e instituciones educativas (<code>.edu.co</code>), elegidos por ser conocidos, no al azar. Es una <strong>muestra</strong>, no un censo: no representa a todas las entidades. Solo se publican los totales; cualquiera puede repetirlo, porque son datos públicos de DNS.</p>
+      <figure class="vineta figura">
+        <h3>Política DMARC encontrada</h3>
+        <div id="g-muestra" class="g-caja"><p class="sub">Cargando la muestra…</p></div>
+        <ul class="leyenda" id="ley-muestra"></ul>
+        <figcaption id="muestra-pie"></figcaption>
+      </figure>
+      <div class="dos-col">
+        <div class="vineta cifras" id="cifras"><p>Cargando cifras…</p></div>
+        <div>
+          <h3>Qué se lee ahí</h3>
+          <p>Casi todos tienen SPF y una clave DKIM visible, y la gran mayoría pide informes (<code>rua</code>): el trabajo está empezado. Lo que falta es el último paso, pasar de observar o mandar a spam a <strong>rechazar</strong>. Es el paso que más miedo da, porque un servicio olvidado en el SPF deja de entregar correo, y por eso los informes son tan importantes.</p>
+          <p>Ninguno tiene MTA-STS y casi ninguno firma su zona con DNSSEC, aunque esos dos no cambian el veredicto.</p>
+          <details>
+            <summary>Dominios revisados</summary>
+            <p id="lista-muestra" class="nota-fuente"></p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section id="ley" class="bloque">
+      <h2>6 · Marco legal colombiano</h2>
+      <p>La Ley 1273 de 2009 añadió al Código Penal el título «De la protección de la información y de los datos». El trabajo de clase la presenta como la primera de la región en tipificar los delitos informáticos dentro del Código Penal. Para la suplantación de correo importan sobre todo dos artículos:</p>
+      <div class="dos-col">
+        <div class="ley">
+          <p><strong>Art. 269G · Suplantación de sitios web para capturar datos personales.</strong></p>
+          <p>Castiga a quien, con objeto ilícito y sin estar facultado, diseñe, desarrolle, trafique, venda, ejecute, programe o <strong>envíe</strong> páginas electrónicas, enlaces o ventanas emergentes. Prisión de 48 a 96 meses y multa de 100 a 1.000 salarios mínimos, si no hay un delito con pena mayor.</p>
+          <p>Con la misma pena castiga a quien <strong>modifique la resolución de nombres de dominio</strong> para llevar a alguien a otra IP creyendo que entra a su banco u otro sitio de confianza («pharming»). Por eso la herramienta también revisa DNSSEC.</p>
+        </div>
+        <div class="ley">
+          <p><strong>Art. 269F · Violación de datos personales.</strong></p>
+          <p>Castiga a quien, sin estar facultado y con provecho propio o de un tercero, obtenga, compile, sustraiga, ofrezca, venda, intercambie, envíe, compre, intercepte, divulgue, modifique o emplee datos personales. Misma pena: 48 a 96 meses y 100 a 1.000 salarios mínimos.</p>
+          <p>Un correo falso con un enlace a una página clonada encaja en el 269G; lo que se hace después con las contraseñas o datos capturados, en el 269F (y, si se mueve dinero, en los 269I y 269J).</p>
+        </div>
+      </div>
+      <p>El trabajo de clase también insiste en la <strong>responsabilidad de los profesionales TIC</strong>: omitir buenas prácticas reconocidas puede ser negligencia. Publicar SPF, DKIM y DMARC es justamente una de esas prácticas, y cuesta tres registros DNS.</p>
+      <p class="aviso"><strong>Uso ético (art. 269A).</strong> La herramienta solo lee registros DNS públicos, lo mismo que hace cualquier servidor de correo al recibir un mensaje. No entra a ningún sistema ni envía correos. Probar a enviar correos falsos a nombre de un dominio ajeno, en cambio, sí puede ser delito. Esto no es asesoría jurídica.</p>
+      <aside class="vineta errata">
+        <h3>Fe de erratas del trabajo de clase</h3>
+        <p>La diapositiva de circunstancias de agravación (art. 269H) dice que la pena «aumenta hasta en la mitad» («incremento del 50 %»). El texto de la ley dice que las penas «se aumentarán de la mitad a las tres cuartas partes». Además, la diapositiva del 269G solo menciona páginas web, pero el artículo también cubre enlaces, ventanas emergentes y la manipulación del DNS, y tiene su propio agravante (de una tercera parte a la mitad) si el autor recluta víctimas en la cadena del delito. Conviene revisar siempre el texto vigente (Secretaría del Senado o SUIN-Juriscol).</p>
+      </aside>
+    </section>
+
+    <section id="diseno" class="bloque">
+      <h2>7 · Decisiones de diseño</h2>
+      <ul class="decisiones">
+        <li><strong>Una sola pregunta arriba.</strong> El veredicto en grande responde lo que la persona quiere saber; la nota A–F va en un sello al lado. Las tarjetas son para quien vaya a arreglarlo.</li>
+        <li><strong>El registro listo para copiar.</strong> Cada tarjeta muestra el registro actual y el siguiente paso, con el nombre exacto donde va (<code>TXT _dmarc.dominio</code>). Para DMARC se propone un paso a la vez (none → quarantine → reject), no el final de golpe, para no tumbar correo legítimo.</li>
+        <li><strong>Abre con un ejemplo real.</strong> paypal.com, una de las marcas más suplantadas del mundo, muestra cómo se ve un dominio bien protegido. Los ejemplos funcionan sin conexión (<code>?sin-conexion</code>) con respuestas guardadas el 10 nov 2026.</li>
+        <li><strong>Sin servidor propio.</strong> Google y Cloudflare publican su DNS sobre HTTPS con CORS abierto, así que el navegador pregunta directo; si Google falla, se pasa a Cloudflare. Las dos devuelven el TXT distinto (Cloudflare con comillas y partido en trozos de 255 caracteres) y se normaliza.</li>
+        <li><strong>Colores con significado:</strong> rojo = falla, ámbar = mejorable, cian = bien; el texto siempre acompaña al color.</li>
+      </ul>
+      <div class="dos-col">
+        <div>
+          <h3>Paleta</h3>
+          <div class="paleta">
+            <span style="--c:#F9F9F7">Papel <code>#F9F9F7</code></span>
+            <span style="--c:#0A090A; --sobre:#F9F9F7">Tinta <code>#0A090A</code></span>
+            <span style="--c:#CB433E; --sobre:#FFFFFF">Rojo <code>#CB433E</code></span>
+            <span style="--c:#E8B44A">Ámbar <code>#E8B44A</code></span>
+            <span style="--c:#438FB8">Cian <code>#438FB8</code></span>
+            <span style="--c:#141C33; --sobre:#F2ECE0">Noche <code>#141C33</code></span>
+          </div>
+        </div>
+        <div class="boceto">
+          <figure>
+            <svg class="grafica" viewBox="0 0 260 150" role="img" aria-label="Boceto 1: una tabla con una fila por registro">
+              <rect x="2" y="2" width="256" height="146" fill="none" stroke="currentColor" stroke-width="2"/>
+              <g stroke="currentColor" stroke-width="1.5"><line x1="2" y1="32" x2="258" y2="32"/><line x1="2" y1="60" x2="258" y2="60"/><line x1="2" y1="88" x2="258" y2="88"/><line x1="2" y1="116" x2="258" y2="116"/><line x1="80" y1="2" x2="80" y2="148"/><line x1="170" y1="2" x2="170" y2="148"/></g>
+            </svg>
+            <figcaption>Versión 1: una tabla. Completa, pero no dice si hay que preocuparse.</figcaption>
+          </figure>
+          <figure>
+            <svg class="grafica" viewBox="0 0 260 150" role="img" aria-label="Boceto 2: sello con la nota, veredicto grande y tarjetas debajo">
+              <circle cx="38" cy="38" r="26" fill="none" stroke="currentColor" stroke-width="3"/>
+              <text x="38" y="48" text-anchor="middle" font-size="28" fill="currentColor" font-family="Bangers, sans-serif">A</text>
+              <rect x="76" y="22" width="170" height="16" fill="currentColor" opacity="0.8"/>
+              <rect x="76" y="44" width="110" height="8" fill="currentColor" opacity="0.4"/>
+              <g fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="80" width="76" height="62"/><rect x="92" y="80" width="76" height="62"/><rect x="178" y="80" width="76" height="62"/></g>
+            </svg>
+            <figcaption>Versión 2 (la elegida): sello, veredicto y una tarjeta por control.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section id="limites" class="bloque">
+      <h2>8 · Limitaciones</h2>
+      <ul>
+        <li><strong>DKIM no se puede enumerar.</strong> La clave vive en <code>selector._domainkey.dominio</code> y el selector lo elige cada proveedor (Google Workspace, por ejemplo, permite nombres propios). Se prueban 20 selectores comunes; «no encontrado» no significa «no tiene».</li>
+        <li><strong>No revisa correos.</strong> Mira la configuración publicada, no el contenido, los enlaces ni las cabeceras de un mensaje concreto. Tampoco puede comprobar la alineación real: eso solo se ve con un correo de verdad.</li>
+        <li><strong>No cubre dominios parecidos.</strong> DMARC protege <code>tubanco.example</code>, no <code>tubanco-pagos.example</code> ni <code>tuvanco.example</code>. Gran parte del phishing usa esos dominios, y ahí la defensa es otra (vigilancia de registros, educación).</li>
+        <li><strong>Dominio organizacional aproximado.</strong> Para heredar el DMARC de un subdominio se usa una lista corta de sufijos (<code>edu.co</code>, <code>gov.co</code>, <code>com.co</code>…) en lugar de la Public Suffix List completa.</li>
+        <li><strong>Las macros de SPF</strong> (<code>%{i}</code>) dependen de cada correo: se cuentan como una búsqueda y no se siguen. El total de búsquedas cambia cuando los proveedores cambian sus <code>include</code>; en la muestra, un dominio pasó de 11 a 10 búsquedas entre dos corridas del mismo día.</li>
+        <li><strong>DMARCbis</strong>, la revisión de la norma en curso en la IETF, cambia <code>pct</code> por una etiqueta de prueba. La herramienta sigue la RFC 7489.</li>
+        <li><strong>DNSSEC</strong> se juzga por la bandera AD del resolutor público; un error de validación (SERVFAIL) se toma como fallo de consulta.</li>
+      </ul>
+    </section>
+
+    <section id="fuentes" class="bloque">
+      <h2>9 · Fuentes</h2>
+      <ol class="fuentes">
+        <li>Trabajo de clase «Prevención frente a los delitos informáticos. Responsabilidad legal en TIC» (Mario Puerta, David Rincón y equipo). Material propio, no publicado aquí.</li>
+        <li>Congreso de Colombia. <a href="http://www.secretariasenado.gov.co/senado/basedoc/ley_1273_2009.html">Ley 1273 de 2009</a>, arts. 269A, 269F, 269G y 269H (texto en la Secretaría del Senado; consultado el 10 nov 2026).</li>
+        <li>S. Kitterman. <a href="https://www.rfc-editor.org/rfc/rfc7208">RFC 7208: Sender Policy Framework (SPF)</a>. IETF, 2014.</li>
+        <li>M. Kucherawy y E. Zwicky. <a href="https://www.rfc-editor.org/rfc/rfc7489">RFC 7489: Domain-based Message Authentication, Reporting, and Conformance (DMARC)</a>. IETF, 2015.</li>
+        <li>D. Crocker, T. Hansen y M. Kucherawy. <a href="https://www.rfc-editor.org/rfc/rfc6376">RFC 6376: DomainKeys Identified Mail (DKIM) Signatures</a>. IETF, 2011. Y <a href="https://www.rfc-editor.org/rfc/rfc8301">RFC 8301</a> (tamaño de clave).</li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc7505">RFC 7505</a> (MX nulo), <a href="https://www.rfc-editor.org/rfc/rfc8461">RFC 8461</a> (MTA-STS) y <a href="https://www.rfc-editor.org/rfc/rfc8460">RFC 8460</a> (TLS-RPT).</li>
+        <li>CISA. <a href="https://www.cisa.gov/news-events/directives/bod-18-01-enhance-email-and-web-security">Binding Operational Directive 18-01: Enhance Email and Web Security</a>, 2017.</li>
+        <li>M3AAWG. <a href="https://www.m3aawg.org/sites/default/files/m3aawg-email-authentication-recommended-best-practices-09-2020.pdf">Email Authentication Recommended Best Practices</a>, 2020.</li>
+        <li><a href="https://developers.google.com/speed/public-dns/docs/doh/json">Google Public DNS: API JSON de DNS sobre HTTPS</a> y <a href="https://developers.cloudflare.com/1.1.1.1/encryption/dns-over-https/make-api-requests/dns-json/">Cloudflare 1.1.1.1: formato JSON</a>.</li>
+      </ol>
+    </section>
+
+    <a class="volver" href="../">Revisar un dominio →</a>
+  </main>
+
+  <footer class="pie">
+    <p>Proceso de la herramienta «¿Tu dominio se puede suplantar?». Código con licencia MIT.</p>
+    <p class="creditos"><a href="https://github.com/ale0009" target="_blank" rel="noopener">Mario Puerta «ale0009»</a> × <a href="https://www.linkedin.com/in/davidalexanderrinconcorredorkuronoma/" target="_blank" rel="noopener">David Rincón «Kuronoma»</a> <a href="#">Portafolio</a></p>
+  </footer>
+</body>
+</html>

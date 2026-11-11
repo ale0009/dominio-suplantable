@@ -1,0 +1,6 @@
+# Material de trabajo: no se publica.
+fuente/
+HANDOFF.md
+node_modules/
+.DS_Store
+*.log

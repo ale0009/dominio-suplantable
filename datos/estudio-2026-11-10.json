@@ -1,0 +1,136 @@
+{
+ "fecha": "2026-11-10",
+ "metodo": "Lógica de esta página (js/analizar.js y js/puntuar.js) con DNS sobre HTTPS de Google y Cloudflare.",
+ "dominios": {
+  "gov": [
+   "presidencia.gov.co",
+   "minhacienda.gov.co",
+   "mintic.gov.co",
+   "minsalud.gov.co",
+   "mineducacion.gov.co",
+   "cancilleria.gov.co",
+   "dian.gov.co",
+   "registraduria.gov.co",
+   "policia.gov.co",
+   "fiscalia.gov.co",
+   "sic.gov.co",
+   "dane.gov.co",
+   "supersociedades.gov.co",
+   "superfinanciera.gov.co",
+   "bogota.gov.co"
+  ],
+  "edu": [
+   "unal.edu.co",
+   "uniandes.edu.co",
+   "javeriana.edu.co",
+   "udea.edu.co",
+   "univalle.edu.co",
+   "uis.edu.co",
+   "sena.edu.co",
+   "urosario.edu.co",
+   "ecci.edu.co",
+   "unab.edu.co",
+   "eafit.edu.co",
+   "utp.edu.co",
+   "unicauca.edu.co",
+   "upn.edu.co",
+   "udistrital.edu.co"
+  ]
+ },
+ "sinDatos": [],
+ "total": {
+  "n": 30,
+  "dmarc": {
+   "quarantine": 14,
+   "none": 8,
+   "reject": 7,
+   "sin": 1
+  },
+  "dmarcParcial": 3,
+  "spf": {
+   "-all": 15,
+   "~all": 13,
+   "sin": 2
+  },
+  "notas": {
+   "C": 4,
+   "B": 11,
+   "D": 9,
+   "A": 4,
+   "F": 2
+  },
+  "veredictos": {
+   "a-medias": 14,
+   "facil": 9,
+   "muy-dificil": 7
+  },
+  "dkimEncontrado": 28,
+  "dnssec": 2,
+  "mtasts": 0,
+  "rua": 26,
+  "spfRoto": 0
+ },
+ "gov": {
+  "n": 15,
+  "dmarc": {
+   "quarantine": 9,
+   "none": 1,
+   "reject": 4,
+   "sin": 1
+  },
+  "dmarcParcial": 1,
+  "spf": {
+   "-all": 10,
+   "~all": 4,
+   "sin": 1
+  },
+  "notas": {
+   "C": 3,
+   "B": 7,
+   "D": 1,
+   "A": 3,
+   "F": 1
+  },
+  "veredictos": {
+   "a-medias": 9,
+   "facil": 2,
+   "muy-dificil": 4
+  },
+  "dkimEncontrado": 14,
+  "dnssec": 1,
+  "mtasts": 0,
+  "rua": 13,
+  "spfRoto": 0
+ },
+ "edu": {
+  "n": 15,
+  "dmarc": {
+   "none": 7,
+   "quarantine": 5,
+   "reject": 3
+  },
+  "dmarcParcial": 2,
+  "spf": {
+   "~all": 9,
+   "-all": 5,
+   "sin": 1
+  },
+  "notas": {
+   "D": 8,
+   "B": 4,
+   "A": 1,
+   "F": 1,
+   "C": 1
+  },
+  "veredictos": {
+   "facil": 7,
+   "a-medias": 5,
+   "muy-dificil": 3
+  },
+  "dkimEncontrado": 14,
+  "dnssec": 1,
+  "mtasts": 0,
+  "rua": 13,
+  "spfRoto": 0
+ }
+}
